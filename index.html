@@ -10,34 +10,32 @@
       margin: 0;
       background-color: #000;
       font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    .player-container {
-      position: relative;
+    .player-wrapper {
       width: 100%;
       max-width: 960px;
-      margin: auto;
       background-color: #000;
+      display: flex;
+      flex-direction: column;
     }
 
-    #video {
+    video {
       width: 100%;
       height: auto;
       background-color: #000;
     }
 
-    .control-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 40px;
-      background: rgba(0, 0, 0, 0.7);
+    .controls {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      padding: 0 10px;
-      z-index: 10;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 8px 12px;
     }
 
     .gear-icon {
@@ -54,8 +52,8 @@
 
     .quality-menu {
       position: absolute;
-      bottom: 50px;
-      right: 10px;
+      bottom: 60px;
+      right: 20px;
       background: rgba(0,0,0,0.85);
       color: white;
       font-size: 14px;
@@ -81,10 +79,10 @@
   </style>
 </head>
 <body>
-  <div class="player-container">
+  <div class="player-wrapper">
     <video id="video" controls autoplay muted></video>
 
-    <div class="control-bar">
+    <div class="controls">
       <svg class="gear-icon" onclick="toggleMenu()" viewBox="0 0 24 24">
         <path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7zm8.94-2.5a7.96 7.96 0 0 0-.63-2.42l2.12-1.65-2-3.46-2.49 1a7.96 7.96 0 0 0-2.07-1.2l-.38-2.65h-4l-.38 2.65a7.96 7.96 0 0 0-2.07 1.2l-2.49-1-2 3.46 2.12 1.65a7.96 7.96 0 0 0-.63 2.42l-2.65.38v4l2.65.38a7.96 7.96 0 0 0 .63 2.42l-2.12 1.65 2 3.46 2.49-1a7.96 7.96 0 0 0 2.07 1.2l.38 2.65h4l.38-2.65a7.96 7.96 0 0 0 2.07-1.2l2.49 1 2-3.46-2.12-1.65a7.96 7.96 0 0 0 .63-2.42l2.65-.38v-4l-2.65-.38z"/>
       </svg>
@@ -134,6 +132,8 @@
       video.addEventListener('loadedmetadata', function () {
         video.play();
       });
+    } else {
+      document.querySelector('.player-wrapper').innerHTML = "<p style='color:white;text-align:center;padding:20px;'>Your browser does not support HLS playback.</p>";
     }
   </script>
 </body>
