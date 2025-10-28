@@ -38,14 +38,16 @@
       align-items: center;
       background: rgba(0, 0, 0, 0.85);
       padding: 10px 16px;
+      border-top: 1px solid #222;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.5);
     }
 
     .controls svg {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       fill: white;
       cursor: pointer;
-      margin: 0 8px;
+      margin: 0 10px;
       transition: fill 0.2s ease;
     }
 
@@ -117,9 +119,7 @@
   <script>
     const video = document.getElementById('video');
     const menu = document.getElementById('quality-menu');
-    const playPauseIcon = document.getElementById('playPauseIcon');
     const playPausePath = document.getElementById('playPausePath');
-    const muteIcon = document.getElementById('muteIcon');
     const mutePath = document.getElementById('mutePath');
     let hls;
 
@@ -137,10 +137,10 @@
     function togglePlay() {
       if (video.paused) {
         video.play();
-        playPausePath.setAttribute("d", "M6 19h4V5H6v14zm8-14v14h4V5h-4z"); // pause icon
+        playPausePath.setAttribute("d", "M6 19h4V5H6v14zm8-14v14h4V5h-4z");
       } else {
         video.pause();
-        playPausePath.setAttribute("d", "M5 3.867v16.266L19 12 5 3.867z"); // play icon
+        playPausePath.setAttribute("d", "M5 3.867v16.266L19 12 5 3.867z");
       }
     }
 
@@ -176,9 +176,3 @@
           btn.textContent = label;
           btn.onclick = () => setQuality(index);
           menu.appendChild(btn);
-        });
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = hlsSource;
-      video.addEventListener('loadedmetadata', function () {
-       
