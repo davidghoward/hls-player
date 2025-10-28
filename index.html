@@ -6,68 +6,51 @@
   <title>NJStreaming Player</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
- body {
-  margin: 0;
-  background-color: #000;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100%;
-  overflow: hidden;
-}
-html, body {
-  height: 100%;
-}
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
 
     .player-wrapper {
-  width: 100%;
-  max-width: 960px;
-  background-color: #000;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  height: 100%;
-}
-
+      width: 100%;
+      max-width: 960px;
+      height: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      background-color: #000;
+    }
 
     #video {
       width: 100%;
       height: auto;
       background-color: #000;
+      flex-grow: 1;
     }
 
     .controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 10px 16px;
     }
 
-    .controls button {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 16px;
-      margin: 0 8px;
-      cursor: pointer;
-    }
-
-    .controls button:hover {
-      color: #0af;
-    }
-
-    .gear-icon {
+    .controls svg {
       width: 24px;
       height: 24px;
       fill: white;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      margin: 0 8px;
+      transition: fill 0.2s ease;
     }
 
-    .gear-icon:hover {
-      transform: rotate(30deg);
+    .controls svg:hover {
+      fill: #0af;
     }
 
     .quality-menu {
@@ -104,15 +87,26 @@ html, body {
 
     <div class="controls">
       <div>
-        <button onclick="togglePlay()">▶️/⏸️</button>
-        <button onclick="toggleMute()">🔊</button>
-        <button onclick="toggleFullscreen()">⛶</button>
-      </div>
-      <div>
-        <svg class="gear-icon" onclick="toggleMenu()" viewBox="0 0 24 24">
-          <path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7zm8.94-2.5a7.96 7.96 0 0 0-.63-2.42l2.12-1.65-2-3.46-2.49 1a7.96 7.96 0 0 0-2.07-1.2l-.38-2.65h-4l-.38 2.65a7.96 7.96 0 0 0-2.07 1.2l-2.49-1-2 3.46 2.12 1.65a7.96 7.96 0 0 0-.63 2.42l-2.65.38v4l2.65.38a7.96 7.96 0 0 0 .63 2.42l-2.12 1.65 2 3.46 2.49-1a7.96 7.96 0 0 0 2.07 1.2l.38 2.65h4l.38-2.65a7.96 7.96 0 0 0 2.07-1.2l2.49 1 2-3.46-2.12-1.65a7.96 7.96 0 0 0 .63-2.42l2.65-.38v-4l-2.65-.38z"/>
+        <!-- Play/Pause -->
+        <svg id="playPauseIcon" onclick="togglePlay()" viewBox="0 0 24 24">
+          <path id="playPausePath" d="M5 3.867v16.266L19 12 5 3.867z"/>
+        </svg>
+
+        <!-- Mute/Unmute -->
+        <svg id="muteIcon" onclick="toggleMute()" viewBox="0 0 24 24">
+          <path id="mutePath" d="M11 5L6 9H2v6h4l5 4V5zm7.59 1.41L16.17 9H15v6h1.17l2.42 2.41 1.41-1.41L18.41 12l2.59-2.59-1.41-1.41z"/>
+        </svg>
+
+        <!-- Fullscreen -->
+        <svg onclick="toggleFullscreen()" viewBox="0 0 24 24">
+          <path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 4h-2v3h-3v2h5v-5zm-2-4V7h-3V5h5v5h-2z"/>
         </svg>
       </div>
+
+      <!-- Gear Icon -->
+      <svg onclick="toggleMenu()" viewBox="0 0 24 24">
+        <path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7zm8.94-2.5a7.96 7.96 0 0 0-.63-2.42l2.12-1.65-2-3.46-2.49 1a7.96 7.96 0 0 0-2.07-1.2l-.38-2.65h-4l-.38 2.65a7.96 7.96 0 0 0-2.07 1.2l-2.49-1-2 3.46 2.12 1.65a7.96 7.96 0 0 0-.63 2.42l-2.65.38v4l2.65.38a7.96 7.96 0 0 0 .63 2.42l-2.12 1.65 2 3.46 2.49-1a7.96 7.96 0 0 0 2.07 1.2l.38 2.65h4l.38-2.65a7.96 7.96 0 0 0 2.07-1.2l2.49 1 2-3.46-2.12-1.65a7.96 7.96 0 0 0 .63-2.42l2.65-.38v-4l-2.65-.38z"/>
+      </svg>
     </div>
 
     <div class="quality-menu" id="quality-menu">
@@ -123,6 +117,10 @@ html, body {
   <script>
     const video = document.getElementById('video');
     const menu = document.getElementById('quality-menu');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const playPausePath = document.getElementById('playPausePath');
+    const muteIcon = document.getElementById('muteIcon');
+    const mutePath = document.getElementById('mutePath');
     let hls;
 
     function toggleMenu() {
@@ -139,13 +137,19 @@ html, body {
     function togglePlay() {
       if (video.paused) {
         video.play();
+        playPausePath.setAttribute("d", "M6 19h4V5H6v14zm8-14v14h4V5h-4z"); // pause icon
       } else {
         video.pause();
+        playPausePath.setAttribute("d", "M5 3.867v16.266L19 12 5 3.867z"); // play icon
       }
     }
 
     function toggleMute() {
       video.muted = !video.muted;
+      mutePath.setAttribute("d", video.muted
+        ? "M16.5 12l4.5 4.5-1.5 1.5L15 13.5l-4.5 4.5-1.5-1.5L13.5 12 9 7.5l1.5-1.5L15 10.5l4.5-4.5 1.5 1.5L16.5 12z"
+        : "M11 5L6 9H2v6h4l5 4V5zm7.59 1.41L16.17 9H15v6h1.17l2.42 2.41 1.41-1.41L18.41 12l2.59-2.59-1.41-1.41z"
+      );
     }
 
     function toggleFullscreen() {
@@ -177,11 +181,4 @@ html, body {
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = hlsSource;
       video.addEventListener('loadedmetadata', function () {
-        video.play();
-      });
-    } else {
-      document.querySelector('.player-wrapper').innerHTML = "<p style='color:white;text-align:center;padding:20px;'>Your browser does not support HLS playback.</p>";
-    }
-  </script>
-</body>
-</html>
+       
