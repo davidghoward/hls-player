@@ -86,3 +86,55 @@
 
     <div class="control-bar">
       <svg class="gear-icon" onclick="toggleMenu()" viewBox="0 0 24 24">
+        <path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7zm8.94-2.5a7.96 7.96 0 0 0-.63-2.42l2.12-1.65-2-3.46-2.49 1a7.96 7.96 0 0 0-2.07-1.2l-.38-2.65h-4l-.38 2.65a7.96 7.96 0 0 0-2.07 1.2l-2.49-1-2 3.46 2.12 1.65a7.96 7.96 0 0 0-.63 2.42l-2.65.38v4l2.65.38a7.96 7.96 0 0 0 .63 2.42l-2.12 1.65 2 3.46 2.49-1a7.96 7.96 0 0 0 2.07 1.2l.38 2.65h4l.38-2.65a7.96 7.96 0 0 0 2.07-1.2l2.49 1 2-3.46-2.12-1.65a7.96 7.96 0 0 0 .63-2.42l2.65-.38v-4l-2.65-.38z"/>
+      </svg>
+    </div>
+
+    <div class="quality-menu" id="quality-menu">
+      <button onclick="setQuality(-1)">Auto</button>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const menu = document.getElementById('quality-menu');
+    let hls;
+
+    function toggleMenu() {
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function setQuality(levelIndex) {
+      if (hls) {
+        hls.currentLevel = levelIndex;
+        toggleMenu();
+      }
+    }
+
+    const hlsSource = "https://customer-i6o8ko0q19q37cmy.cloudflarestream.com/b7eb864bce238f17bdbf39942185668d/manifest/video.m3u8";
+
+    if (Hls.isSupported()) {
+      hls = new Hls();
+      hls.loadSource(hlsSource);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+
+        hls.levels.forEach((level, index) => {
+          const label = level.height + "p";
+          const btn = document.createElement("button");
+          btn.textContent = label;
+          btn.onclick = () => setQuality(index);
+          menu.appendChild(btn);
+        });
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsSource;
+      video.addEventListener('loadedmetadata', function () {
+        video.play();
+      });
+    }
+  </script>
+</body>
+</html>
